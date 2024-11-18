@@ -1,0 +1,102 @@
+import logging
+from datetime import datetime
+
+# Set up logging
+logging.basicConfig(filename='calculator_history.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# Define calculator functions
+def add(x, y):
+    return x + y
+
+def subtract(x, y):
+    return x - y
+
+def multiply(x, y):
+    return x * y
+
+def divide(x, y):
+    if y == 0:
+        return "Error: Division by zero is not allowed."
+    return x / y
+
+def power(x, y):
+    return x ** y
+
+# History tracking list
+history = []
+
+# Function to log and save history
+def log_operation(operation, result):
+    entry = f"{datetime.now()} - {operation} = {result}"
+    history.append(entry)
+    logging.info(entry)
+
+def save_history_to_file():
+    with open("calculator_history.txt", "w") as file:
+        for entry in history:
+            file.write(entry + "\n")
+    print("History saved to 'calculator_history.txt'.")
+
+def load_history_from_file():
+    try:
+        with open("calculator_history.txt", "r") as file:
+            return file.readlines()
+    except FileNotFoundError:
+        return "No history found."
+
+# Calculator function with history
+def calculator():
+    print("Select operation:")
+    print("1. Add")
+    print("2. Subtract")
+    print("3. Multiply")
+    print("4. Divide")
+    print("5. Power")
+    print("6. Show History")
+    print("7. Save History to File")
+    
+    try:
+        choice = int(input("Enter choice (1-7): "))
+        
+        if choice == 6:
+            for line in load_history_from_file():
+                print(line.strip())
+            return
+        
+        elif choice == 7:
+            save_history_to_file()
+            return
+        
+        elif choice not in [1, 2, 3, 4, 5]:
+            print("Invalid choice! Please select a valid option.")
+            return
+
+        num1 = float(input("Enter first number: "))
+        num2 = float(input("Enter second number: "))
+        
+        if choice == 1:
+            result = add(num1, num2)
+            operation = f"{num1} + {num2}"
+        elif choice == 2:
+            result = subtract(num1, num2)
+            operation = f"{num1} - {num2}"
+        elif choice == 3:
+            result = multiply(num1, num2)
+            operation = f"{num1} * {num2}"
+        elif choice == 4:
+            result = divide(num1, num2)
+            operation = f"{num1} / {num2}"
+        elif choice == 5:
+            result = power(num1, num2)
+            operation = f"{num1} ^ {num2}"
+        
+        print(f"The result is: {result}")
+        log_operation(operation, result)
+    
+    except ValueError:
+        print("Error: Please enter valid numbers.")
+
+# Run the enhanced calculator
+calculator()
+
+
